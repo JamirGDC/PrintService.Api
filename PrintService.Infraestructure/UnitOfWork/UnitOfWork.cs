@@ -1,4 +1,6 @@
-﻿namespace PrintService.Infraestructure.UnitOfWork;
+﻿using PrintService.Application.Interfaces.IRepositories;
+
+namespace PrintService.Infraestructure.UnitOfWork;
 
 using Microsoft.EntityFrameworkCore.Storage;
 using PrintService.Application.Interfaces;
@@ -7,12 +9,16 @@ using PrintService.Infraestructure.Data;
 public class UnitOfWork : IUnitOfWork
 {
     private readonly ApplicationDbContext _dbContext;
+
+    public IPrintJobRepository PrintJobRepository { get; }
+
     public UnitOfWork
     (
 
-        ApplicationDbContext dbContext)
+        ApplicationDbContext dbContext, IPrintJobRepository printJobRepository)
     {
-        _dbContext = dbContext; 
+        _dbContext = dbContext;
+        PrintJobRepository = printJobRepository;
     }
 
     public async Task<int> Complete(CancellationToken cancellationToken)

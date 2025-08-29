@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using PrintService.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,6 +15,12 @@ public class ApplicationDbContext : DbContext
     {
 
     }
+
+    public DbSet<PrintJob> PrintJobs { get; set; }
+    public DbSet<Device> Devices { get; set; }
+    public DbSet<UserPrinter> UserPrinters { get; set; }
+    public DbSet<IdempotencyKey> IdempotencyKeys { get; set; }
+    public DbSet<OutboxMessage> OutboxMessages { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

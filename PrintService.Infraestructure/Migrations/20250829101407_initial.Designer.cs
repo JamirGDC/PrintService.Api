@@ -12,8 +12,8 @@ using PrintService.Infraestructure.Data;
 namespace PrintService.Infraestructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250828200037_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20250829101407_initial")]
+    partial class initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

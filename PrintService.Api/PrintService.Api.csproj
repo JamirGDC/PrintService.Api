@@ -19,4 +19,8 @@
     <ProjectReference Include="..\PrintService.Infraestructure\PrintService.Infraestructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Extensions\" />
+  </ItemGroup>
+
 </Project>

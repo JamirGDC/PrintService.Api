@@ -12,7 +12,7 @@ public class PrintJob : BaseEntity
     public byte[]? PayloadHash { get; set; }
     public int SignatureKeyId { get; set; }
     public byte[]? Signature { get; set; }
-    public byte Status { get; set; } = 0; // Pending
+    public byte Status { get; set; } = 0;
     public int Attempts { get; set; } = 0;
     public DateTime? ClaimedUtc { get; set; }
     public DateTime? CompletedUtc { get; set; }

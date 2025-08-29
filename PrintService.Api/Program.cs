@@ -1,3 +1,4 @@
+using PrintService.Api.Extensions;
 using PrintService.Infraestructure.Data;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -7,10 +8,10 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-builder.Services.AddInfrastructure(connectionString);
 
+builder.Services.AddInfrastructure(builder.Configuration.GetConnectionString("DefaultConnection"));
 
+builder.Services.AddApiDependencies();
 
 var app = builder.Build();
 

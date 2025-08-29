@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using PrintService.Application.DTOs.Request;
 using PrintService.Application.DTOs.Response;
+using PrintService.Application.Interfaces.IServices;
 using PrintService.Application.Services;
 using PrintService.Domain.Common.Result;
 
@@ -11,16 +12,16 @@ namespace PrintService.Api.Controllers;
 [Route("v1/[controller]")]
 public class JobsController : ControllerBase
 {
-    private readonly JobService _service;
+    private readonly IJobService _jobService;
 
-    public JobsController(JobService service)
+    public JobsController(IJobService JobService)
     {
-        _service = service;
+        _jobService = JobService;
     }
 
     [HttpPost]
-    public async Task<Result<CreateJobResponse>> CreateJob([FromBody] CreateJobRequest request, CancellationToken ct)
+    public async Task<Result<CreateJobResponseDto>> CreateJob([FromBody] CreateJobRequestDto createJobRequest, CancellationToken cancellationToken)
     {
-        return await 
+        return await _jobService.CreateJobAsync(createJobRequest, cancellationToken);
     }
 }

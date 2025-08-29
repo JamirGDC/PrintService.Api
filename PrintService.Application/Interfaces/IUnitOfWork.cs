@@ -1,9 +1,12 @@
 ﻿namespace PrintService.Application.Interfaces;
 
 using Microsoft.EntityFrameworkCore.Storage;
+using PrintService.Application.Interfaces.IRepositories;
 
-public interface IUnitOfWork : IDisposable
+public interface IUnitOfWork
 {
+    IPrintJobRepository PrintJobRepository { get; }
+
     Task<int> Complete(CancellationToken cancellationToken);
     void Dispose();
     Task<IDbContextTransaction> BeginTransaction(CancellationToken cancellationToken);

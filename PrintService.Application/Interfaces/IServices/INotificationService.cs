@@ -1,4 +1,4 @@
-﻿namespace PrintService.Application.Interfaces;
+﻿namespace PrintService.Application.Interfaces.IServices;
 
 public interface INotificationService
 {
