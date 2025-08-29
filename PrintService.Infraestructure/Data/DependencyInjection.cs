@@ -1,5 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using PrintService.Application.Interfaces;
+using PrintService.Infraestructure.Services;
 using System;
 
 namespace PrintService.Infraestructure.Data;
@@ -11,7 +13,7 @@ public static class DependencyInjection
         services.AddDbContext<ApplicationDbContext>(options =>
             options.UseSqlServer(connectionString));
 
-        //services.AddScoped<IJobRepository, EfJobRepository>();
+        services.AddScoped<INotificationService, SignalRNotificationService>();
 
         return services;
     }

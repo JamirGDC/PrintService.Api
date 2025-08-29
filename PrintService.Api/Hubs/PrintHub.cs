@@ -4,24 +4,24 @@ using System.Text.RegularExpressions;
 
 namespace PrintService.Api.Hubs;
 
+//[Authorize]
 public class PrintHub : Hub
 {
-    public async Task RegisterAgent(string agentRegion, string deviceId)
+    public override async Task OnConnectedAsync()
     {
-        await Groups.AddToGroupAsync(Context.ConnectionId, $"region:{agentRegion}");
-        await Groups.AddToGroupAsync(Context.ConnectionId, $"device:{deviceId}");
+        var http = Context.GetHttpContext();
+        var userId = Context.User?.FindFirst("sub")?.Value;
+        var deviceId = http?.Request.Query["deviceId"];
+        var agentRegion = http?.Request.Query["agentRegion"];
 
-        await Clients.Caller.SendAsync("AgentRegistered", $"Agente {deviceId} en región {agentRegion} registrado");
+        if (!string.IsNullOrEmpty(userId))
+            await Groups.AddToGroupAsync(Context.ConnectionId, $"user:{userId}");
+
+        if (!string.IsNullOrEmpty(deviceId))
+            await Groups.AddToGroupAsync(Context.ConnectionId, $"device:{deviceId}");
+
+        Console.WriteLine($"Hub connected: user={userId}, device={deviceId}, region={agentRegion}");
+
+        await base.OnConnectedAsync();
     }
-
-    public async Task SendPrinters(string[] printers)
-    {
-        await Clients.Caller.SendAsync("PrintersUpdated", printers);
-    }
-
-    public async Task NotifyJobCreated(string userId, string jobId)
-    {
-        await Clients.Group($"user:{userId}").SendAsync("JobCreated", jobId);
-    }
-
 }

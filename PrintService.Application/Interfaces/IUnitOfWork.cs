@@ -2,7 +2,7 @@
 
 using Microsoft.EntityFrameworkCore.Storage;
 
-public interface IUnitOfWork
+public interface IUnitOfWork : IDisposable
 {
     Task<int> Complete(CancellationToken cancellationToken);
     void Dispose();
