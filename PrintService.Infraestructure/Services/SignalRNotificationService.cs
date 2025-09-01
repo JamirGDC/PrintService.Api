@@ -18,4 +18,15 @@ public class SignalRNotificationService : INotificationService
         await _hubContext.Clients.Group($"user:{userId}")
             .SendAsync("JobCreated", new { JobId = jobId });
     }
+
+    public async Task NotifyJobFinished(string userId, Guid jobId)
+    {
+        await _hubContext.Clients.Group($"user:{userId}")
+            .SendAsync("JobFinished", new
+            {
+                JobId = jobId,
+                Status = "Finished",
+                FinishedAt = DateTime.UtcNow,
+            });
+    }
 }

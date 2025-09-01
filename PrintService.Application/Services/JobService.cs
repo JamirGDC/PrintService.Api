@@ -33,4 +33,28 @@ public class JobService : IJobService
 
         return Result<CreateJobResponseDto>.Success(HttpStatusCode.Created).WithPayload(newJobPrint.ToResponse());
     }
+
+
+    public async Task<Result<AcknowledgeJobResponseDto>> AcknowledgeJobAsync(Guid id, AcknowledgeJobRequestDto createJobRequest, CancellationToken cancellationToken)
+    {
+        var jobInDb = await _unitOfWork.PrintJobRepository.GetById(id);
+
+        if (jobInDb == null)
+            return Result<AcknowledgeJobResponseDto>.Failure(HttpStatusCode.BadRequest).WithErrors("Job Not Found");
+
+        jobInDb.Status = 1;
+
+        await _unitOfWork.PrintJobRepository.Update(jobInDb.Id, jobInDb);
+
+        await _notifier.NotifyJobFinished("agent-123", jobInDb.Id);
+
+        var response = new AcknowledgeJobResponseDto
+        {
+            JobId = jobInDb.Id,
+            Status = "finished",
+            AcknowledgedAt = jobInDb.UpdatedUtc
+        };
+
+        return Result<AcknowledgeJobResponseDto>.Success(HttpStatusCode.Accepted).WithPayload(response);
+    }
 }

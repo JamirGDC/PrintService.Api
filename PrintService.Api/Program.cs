@@ -1,4 +1,5 @@
 using PrintService.Api.Extensions;
+using PrintService.Api.Hubs;
 using PrintService.Infraestructure.Data;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,6 +14,28 @@ builder.Services.AddInfrastructure(builder.Configuration.GetConnectionString("De
 
 builder.Services.AddApiDependencies();
 
+
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", policy =>
+    {
+        policy.SetIsOriginAllowed(_ => true)
+            .AllowAnyMethod()
+            .AllowAnyHeader()
+            .AllowCredentials();
+    });
+});
+
+
+builder.Services.AddSignalR();
+
+
+
+
+
+
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -26,6 +49,13 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
+
+app.UseCors("AllowAll");
+
+app.MapHub<PrintHub>("/hubs/print");
+
+
 
 app.Run();
 

@@ -7,4 +7,5 @@ namespace PrintService.Application.Interfaces.IServices;
 public interface IJobService
 {
     Task <Result<CreateJobResponseDto>>CreateJobAsync(CreateJobRequestDto createJobRequest, CancellationToken cancellationToken);
+    Task <Result<AcknowledgeJobResponseDto>> AcknowledgeJobAsync(Guid id, AcknowledgeJobRequestDto createJobRequest, CancellationToken cancellationToken);
 }

@@ -24,4 +24,10 @@ public class JobsController : ControllerBase
     {
         return await _jobService.CreateJobAsync(createJobRequest, cancellationToken);
     }
+
+    [HttpPost("{id:guid}/ack")]
+    public async Task<Result<AcknowledgeJobResponseDto>> AcknowledgeJob(Guid id, [FromBody] AcknowledgeJobRequestDto acknowledgeJobRequest, CancellationToken cancellationToken)
+    {
+        return await _jobService.AcknowledgeJobAsync(id, acknowledgeJobRequest, cancellationToken);
+    }
 }
