@@ -8,7 +8,6 @@ namespace PrintService.Domain.Entities;
 
 public class Device : BaseEntity
 {
-    public string DeviceId { get; set; } = string.Empty;
     public string? UserId { get; set; }
     public string AgentRegion { get; set; } = string.Empty;
     public string MachineName { get; set; } = string.Empty;

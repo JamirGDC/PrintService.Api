@@ -1,8 +1,7 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 using PrintService.Application.Interfaces.IServices;
-using PrintService.Infraestructure.SignalR;
 
-namespace PrintService.Infraestructure.Services;
+namespace PrintService.Api.Hubs;
 
 public class SignalRNotificationService : INotificationService
 {
@@ -13,10 +12,16 @@ public class SignalRNotificationService : INotificationService
         _hubContext = hubContext;
     }
 
-    public async Task NotifyJobCreated(string userId, Guid jobId)
+    public async Task NotifyJobCreated(string region, Guid jobId)
     {
-        await _hubContext.Clients.Group($"user:{userId}")
+        await _hubContext.Clients.Group($"region:{region}")
             .SendAsync("JobCreated", new { JobId = jobId });
+    }
+
+    public async Task NotifyGetJob(string userId, Guid jobId)
+    {
+        await _hubContext.Clients.User($"agent:{userId}")
+            .SendAsync("JobClaimed", new { JobId = jobId });
     }
 
     public async Task NotifyJobFinished(string userId, Guid jobId)
@@ -29,4 +34,6 @@ public class SignalRNotificationService : INotificationService
                 FinishedAt = DateTime.UtcNow,
             });
     }
+
+    
 }

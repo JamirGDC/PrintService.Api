@@ -8,4 +8,5 @@ public interface IJobService
 {
     Task <Result<CreateJobResponseDto>>CreateJobAsync(CreateJobRequestDto createJobRequest, CancellationToken cancellationToken);
     Task <Result<AcknowledgeJobResponseDto>> AcknowledgeJobAsync(Guid id, AcknowledgeJobRequestDto createJobRequest, CancellationToken cancellationToken);
+    Task <Result<ClaimJobResponseDto>> ClaimJobAsync(Guid id, CancellationToken cancellationToken);
 }

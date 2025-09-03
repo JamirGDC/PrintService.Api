@@ -1,9 +1,7 @@
-﻿using Azure.Core;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using PrintService.Application.DTOs.Request;
 using PrintService.Application.DTOs.Response;
 using PrintService.Application.Interfaces.IServices;
-using PrintService.Application.Services;
 using PrintService.Domain.Common.Result;
 
 namespace PrintService.Api.Controllers;
@@ -25,9 +23,15 @@ public class JobsController : ControllerBase
         return await _jobService.CreateJobAsync(createJobRequest, cancellationToken);
     }
 
-    [HttpPost("{id:guid}/ack")]
+    [HttpPost("{id:guid}/acknowlodeg")]
     public async Task<Result<AcknowledgeJobResponseDto>> AcknowledgeJob(Guid id, [FromBody] AcknowledgeJobRequestDto acknowledgeJobRequest, CancellationToken cancellationToken)
     {
         return await _jobService.AcknowledgeJobAsync(id, acknowledgeJobRequest, cancellationToken);
+    }
+
+    [HttpPost("{id:guid}/claim")]
+    public async Task<Result<ClaimJobResponseDto>> ClaimJob(Guid id, CancellationToken cancellationToken)
+    {
+        return await _jobService.ClaimJobAsync(id, cancellationToken);
     }
 }

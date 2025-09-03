@@ -18,9 +18,9 @@ public class DeviceConfiguration : EntityTypeBaseConfiguration<Device>
 
     protected override void ConfigurateProperties(EntityTypeBuilder<Device> builder)
     {
-        builder.HasKey(d => d.DeviceId);
+        builder.HasKey(d => d.Id);
 
-        builder.Property(d => d.DeviceId).HasMaxLength(128).IsRequired();
+        builder.Property(d => d.Id).HasMaxLength(128).IsRequired();
         builder.Property(d => d.UserId).HasMaxLength(128);
         builder.Property(d => d.AgentRegion).HasMaxLength(32).IsRequired();
         builder.Property(d => d.MachineName).HasMaxLength(256).IsRequired();

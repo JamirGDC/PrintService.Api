@@ -11,14 +11,16 @@ public class UnitOfWork : IUnitOfWork
     private readonly ApplicationDbContext _dbContext;
 
     public IPrintJobRepository PrintJobRepository { get; }
+    public IDeviceRepository DeviceRepository { get; }
 
     public UnitOfWork
     (
 
-        ApplicationDbContext dbContext, IPrintJobRepository printJobRepository)
+        ApplicationDbContext dbContext, IPrintJobRepository printJobRepository, IDeviceRepository deviceRepository)
     {
         _dbContext = dbContext;
         PrintJobRepository = printJobRepository;
+        DeviceRepository = deviceRepository;
     }
 
     public async Task<int> Complete(CancellationToken cancellationToken)

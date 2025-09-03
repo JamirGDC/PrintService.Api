@@ -1,28 +1,36 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.SignalR;
-using System.Text.RegularExpressions;
+﻿using Microsoft.AspNetCore.SignalR;
+using PrintService.Application.Interfaces.IServices;
+using System.Collections.Concurrent;
 
 namespace PrintService.Api.Hubs;
 
-//[Authorize]
 public class PrintHub : Hub
 {
+    private readonly ILogger<PrintHub> _logger;
+    private static readonly ConcurrentDictionary<string, (string ClientId,  string? Region)> _connections
+        = new();
+
+    public PrintHub(ILogger<PrintHub> logger)
+    {
+        _logger = logger;
+    }
+
     public override async Task OnConnectedAsync()
     {
         var http = Context.GetHttpContext();
 
-        var userId = Context.User?.FindFirst("sub")?.Value ?? "agent-123";
+        var clientId = Context.User?.FindFirst("client_id")?.Value;
 
-        var deviceId = http?.Request.Query["deviceId"];
-        var agentRegion = http?.Request.Query["agentRegion"];
+        var region = http?.Request.Query["region"];
 
-        if (!string.IsNullOrEmpty(userId))
-            await Groups.AddToGroupAsync(Context.ConnectionId, $"user:{userId}");
+        _connections[Context.ConnectionId] = (clientId, region);
 
-        if (!string.IsNullOrEmpty(deviceId))
-            await Groups.AddToGroupAsync(Context.ConnectionId, $"device:{deviceId}");
+        await Groups.AddToGroupAsync(Context.ConnectionId, $"agent:{clientId}");
 
+        if (!string.IsNullOrEmpty(region))
+            await Groups.AddToGroupAsync(Context.ConnectionId, $"region:{region}");
 
         await base.OnConnectedAsync();
     }
+
 }

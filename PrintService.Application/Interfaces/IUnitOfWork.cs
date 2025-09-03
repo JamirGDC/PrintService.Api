@@ -6,6 +6,7 @@ using PrintService.Application.Interfaces.IRepositories;
 public interface IUnitOfWork
 {
     IPrintJobRepository PrintJobRepository { get; }
+    IDeviceRepository DeviceRepository { get; }
 
     Task<int> Complete(CancellationToken cancellationToken);
     void Dispose();
