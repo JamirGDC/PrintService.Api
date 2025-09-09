@@ -1,13 +1,14 @@
-﻿using System.Net;
-using System.Runtime.CompilerServices;
-using PrintService.Application.DTOs.Request;
+﻿using PrintService.Application.DTOs.Request;
 using PrintService.Application.DTOs.Response;
 using PrintService.Application.Interfaces;
 using PrintService.Application.Interfaces.IServices;
-using PrintService.Domain.Common.Result;
-using System.Threading;
 using PrintService.Application.Utilities;
+using PrintService.Domain.Common.Result;
+using PrintService.Domain.Entities;
 using PrintService.Domain.Enums;
+using System.Net;
+using System.Runtime.CompilerServices;
+using System.Threading;
 
 namespace PrintService.Application.Services;
 
@@ -15,23 +16,31 @@ public class JobService : IJobService
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly INotificationService _notifier;
+    private readonly IRequestContext _requestContext;
 
-    public JobService(IUnitOfWork unitOfWork, INotificationService notifier)
+    public JobService(IUnitOfWork unitOfWork, INotificationService notifier, IRequestContext requestContext)
     {
         _unitOfWork = unitOfWork;
         _notifier = notifier;
+        _requestContext = requestContext;
     }
 
     public async Task<Result<CreateJobResponseDto>> CreateJobAsync(CreateJobRequestDto createJobRequest, CancellationToken cancellationToken)
     {
+        //var idempotency = _requestContext.IdempotencyKey;
+
+        //var existing = await _unitOfWork.IdempotencyRepository.GetAsync(idempotencyKey, cancellationToken);
+
+        var region = _requestContext.Region;
+
         var newJobPrint = await _unitOfWork.PrintJobRepository.Create(createJobRequest.ToDomain(), cancellationToken);
 
         if (newJobPrint == null)
-            return Result<CreateJobResponseDto>.Failure(HttpStatusCode.BadRequest).WithErrors("An Error ocurred while create a product");
+            return Result<CreateJobResponseDto>.Failure(HttpStatusCode.BadRequest).WithErrors("An Error ocurred while create a job");
 
         await _unitOfWork.Complete(cancellationToken);
 
-        await _notifier.NotifyJobCreated("DEU", newJobPrint.Id);
+        await _notifier.NotifyJobCreated(region, newJobPrint.Id);
 
         return Result<CreateJobResponseDto>.Success(HttpStatusCode.Created).WithPayload(newJobPrint.ToResponse());
     }

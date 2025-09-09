@@ -13,7 +13,7 @@ public static class DeviceMappers
         {
             Id = registerDevice.DeviceId,
             MachineName = registerDevice.MachineName,
-            AgentRegion = registerDevice.AgentRegion,
+            AgentRegion = "DEU",
             PrintersJson = JsonSerializer.Serialize(registerDevice.Printers),
             LastSeenUtc = DateTime.UtcNow
         };

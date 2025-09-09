@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc.Filters;
 using PrintService.Domain.Common.Result;
 
-namespace PrintService.Filters;
+namespace PrintService.Api.Filters;
 
 public class ResultHttpCodeActionFilter : IActionFilter
 {

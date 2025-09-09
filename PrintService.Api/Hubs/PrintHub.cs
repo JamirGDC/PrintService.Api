@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 using PrintService.Application.Interfaces.IServices;
 using System.Collections.Concurrent;
+using Microsoft.AspNetCore.Authorization;
 
 namespace PrintService.Api.Hubs;
 
+[Authorize]
 public class PrintHub : Hub
 {
     private readonly ILogger<PrintHub> _logger;

@@ -1,8 +1,9 @@
 using Microsoft.OpenApi.Models;
 using PrintService.Api.Extensions;
+using PrintService.Api.Filters;
 using PrintService.Api.Hubs;
-using PrintService.Filters;
 using PrintService.Infraestructure.Data;
+using PrintService.Infraestructure.Extensions.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -37,6 +38,8 @@ builder.Services.AddSwaggerGen(c =>
             Array.Empty<string>()
         }
     });
+
+    c.OperationFilter<RequiredHeadersOperationFilter>();
 });
 
 builder.Services.AddJwtAuthentication(builder.Configuration);
@@ -69,11 +72,16 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseCors("AllowAll");
+
+app.UseAuthentication();
+
 app.UseAuthorization();
+
+app.UseMiddleware<RequestContextMiddleware>();
 
 app.MapControllers();
 
-app.UseCors("AllowAll");
 
 app.MapHub<PrintHub>("/hubs/print");
 

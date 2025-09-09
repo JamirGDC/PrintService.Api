@@ -32,12 +32,16 @@ public class AuthService : IAuthService
         var claims = new List<Claim>
         {
             new Claim("client_id", request.ClientId),
-            new Claim("scope", string.Join(" ", client.AllowedScopes)),
         };
+
+        foreach (var scope in client.AllowedScopes)
+        {
+            claims.Add(new Claim("scope", scope));
+        }
 
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]!));
         var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-        var expires = DateTime.UtcNow.AddHours(1);
+        var expires = DateTime.UtcNow.AddMinutes(1);
 
         var token = new JwtSecurityToken(
             issuer: _config["Jwt:Issuer"],

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using PrintService.Application.DTOs.Request;
 using PrintService.Application.DTOs.Response;
 using PrintService.Application.Interfaces.IServices;
@@ -18,6 +19,7 @@ public class JobsController : ControllerBase
     }
 
     [HttpPost]
+    [Authorize(Policy = "print.jobs.write")]
     public async Task<Result<CreateJobResponseDto>> CreateJob([FromBody] CreateJobRequestDto createJobRequest, CancellationToken cancellationToken)
     {
         return await _jobService.CreateJobAsync(createJobRequest, cancellationToken);

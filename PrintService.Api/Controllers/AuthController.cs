@@ -17,11 +17,9 @@ public class AuthController
         _authService = authService;
     }
 
-
     [HttpPost("token")]
     public async Task<Result<TokenResponseDto>> GetToken([FromForm] TokenRequestDto request)
     {
          return await _authService.GenerateTokenAsync(request);
-
     }
 }
