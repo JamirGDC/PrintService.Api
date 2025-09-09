@@ -3,7 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using PrintService.Infraestructure.Context;
 using System.Net;
 using System.Text.Json;
-using PrintService.Application.Interfaces.IServices;
+using PrintService.Application.Interfaces.Services;
 
 namespace PrintService.Infraestructure.Extensions.Middleware;
 

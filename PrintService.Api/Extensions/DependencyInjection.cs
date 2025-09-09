@@ -1,5 +1,5 @@
 ﻿using PrintService.Api.Hubs;
-using PrintService.Application.Interfaces.IServices;
+using PrintService.Application.Interfaces.Services;
 using PrintService.Application.Services;
 using PrintService.Infraestructure.Context;
 

@@ -2,7 +2,7 @@
 using PrintService.Application.DTOs.Response;
 using PrintService.Domain.Entities;
 
-namespace PrintService.Application.Utilities;
+namespace PrintService.Application.Utilities.Mappers;
 
 public static class PrintJobMappers
 {

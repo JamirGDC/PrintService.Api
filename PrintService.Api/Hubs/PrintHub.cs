@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.SignalR;
-using PrintService.Application.Interfaces.IServices;
+using PrintService.Application.Interfaces.Services;
 using System.Collections.Concurrent;
 using Microsoft.AspNetCore.Authorization;
 

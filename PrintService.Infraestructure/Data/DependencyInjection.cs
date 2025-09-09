@@ -2,8 +2,8 @@
 using Microsoft.Extensions.DependencyInjection;
 using PrintService.Application.Interfaces;
 using System;
-using PrintService.Application.Interfaces.IRepositories;
 using PrintService.Infraestructure.Repositories;
+using PrintService.Application.Interfaces.Repositories;
 
 namespace PrintService.Infraestructure.Data;
 

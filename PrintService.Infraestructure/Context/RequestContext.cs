@@ -1,4 +1,4 @@
-﻿using PrintService.Application.Interfaces.IServices;
+﻿using PrintService.Application.Interfaces.Services;
 
 namespace PrintService.Infraestructure.Context;
 

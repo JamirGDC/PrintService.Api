@@ -2,8 +2,8 @@
 using PrintService.Application.DTOs.Request;
 using PrintService.Application.DTOs.Response;
 using PrintService.Application.Interfaces;
-using PrintService.Application.Interfaces.IServices;
-using PrintService.Application.Utilities;
+using PrintService.Application.Interfaces.Services;
+using PrintService.Application.Utilities.Mappers;
 using PrintService.Domain.Common.Result;
 
 namespace PrintService.Application.Services;
@@ -11,10 +11,12 @@ namespace PrintService.Application.Services;
 public class DeviceService : IDeviceService
 {
     private readonly IUnitOfWork _unitOfWork;
+    private readonly IRequestContext _requestContext;
 
-    public DeviceService(IUnitOfWork unitOfWork)
+    public DeviceService(IUnitOfWork unitOfWork, IRequestContext requestContext)
     {
         _unitOfWork = unitOfWork;
+        _requestContext = requestContext;
     }
 
     public async Task<Result<RegisterDeviceResponseDto>> RegisterDeviceAsync(RegisterDeviceRequestDto registerDevice, CancellationToken cancellationToken)

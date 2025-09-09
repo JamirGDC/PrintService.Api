@@ -1,4 +1,4 @@
-﻿using PrintService.Application.Interfaces.IRepositories;
+﻿using PrintService.Application.Interfaces.Repositories;
 using PrintService.Domain.Entities;
 using PrintService.Infraestructure.Data;
 

@@ -2,7 +2,7 @@
 using PrintService.Application.DTOs.Response;
 using PrintService.Domain.Common.Result;
 
-namespace PrintService.Application.Interfaces.IServices;
+namespace PrintService.Application.Interfaces.Services;
 
 public interface IAuthService
 {

@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.SignalR;
-using PrintService.Application.Interfaces.IServices;
+using PrintService.Application.Interfaces.Services;
 
 namespace PrintService.Api.Hubs;
 

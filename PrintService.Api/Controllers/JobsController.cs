@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using PrintService.Application.DTOs.Request;
 using PrintService.Application.DTOs.Response;
-using PrintService.Application.Interfaces.IServices;
+using PrintService.Application.Interfaces.Services;
 using PrintService.Domain.Common.Result;
 
 namespace PrintService.Api.Controllers;

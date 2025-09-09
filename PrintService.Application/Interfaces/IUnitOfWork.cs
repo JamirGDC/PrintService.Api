@@ -1,7 +1,7 @@
 ﻿namespace PrintService.Application.Interfaces;
 
 using Microsoft.EntityFrameworkCore.Storage;
-using PrintService.Application.Interfaces.IRepositories;
+using PrintService.Application.Interfaces.Repositories;
 
 public interface IUnitOfWork
 {

@@ -1,8 +1,8 @@
 ﻿using PrintService.Application.DTOs.Request;
 using PrintService.Application.DTOs.Response;
 using PrintService.Application.Interfaces;
-using PrintService.Application.Interfaces.IServices;
-using PrintService.Application.Utilities;
+using PrintService.Application.Interfaces.Services;
+using PrintService.Application.Utilities.Mappers;
 using PrintService.Domain.Common.Result;
 using PrintService.Domain.Entities;
 using PrintService.Domain.Enums;
