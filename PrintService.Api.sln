@@ -3,15 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.14.36401.2
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PrintService.Api", "PrintService.Api\PrintService.Api.csproj", "{190D36C6-55A7-4BE1-BED1-94203AC49829}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PrintService.Api", "src\PrintService.Api\PrintService.Api.csproj", "{190D36C6-55A7-4BE1-BED1-94203AC49829}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PrintService.Application", "PrintService.Application\PrintService.Application.csproj", "{68218D36-0797-4CA2-AA5E-7189DFD4527A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PrintService.Application", "src\PrintService.Application\PrintService.Application.csproj", "{68218D36-0797-4CA2-AA5E-7189DFD4527A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PrintService.Domain", "PrintService.Domain\PrintService.Domain.csproj", "{C1D0C789-02E9-4AF3-A988-45008AA36B03}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PrintService.Domain", "src\PrintService.Domain\PrintService.Domain.csproj", "{C1D0C789-02E9-4AF3-A988-45008AA36B03}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PrintService.Infraestructure", "PrintService.Infraestructure\PrintService.Infraestructure.csproj", "{4D585456-4EFD-4A80-A519-933015C0DCAA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PrintService.Infraestructure", "src\PrintService.Infraestructure\PrintService.Infraestructure.csproj", "{4D585456-4EFD-4A80-A519-933015C0DCAA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PrintService.Shared", "PrintService.Shared\PrintService.Shared.csproj", "{4247CA78-B6E1-48A9-86BA-F538D42A54F0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PrintService.Shared", "src\PrintService.Shared\PrintService.Shared.csproj", "{4247CA78-B6E1-48A9-86BA-F538D42A54F0}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "00.Common", "00.Common", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
 EndProject
@@ -23,9 +23,23 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "30.APPLICATION", "30.APPLIC
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "40.DOMAIN", "40.DOMAIN", "{4396AB48-A596-4179-8965-64E602BE8429}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PrintService.Shared.Logging", "PrintService.Shared.Logging\PrintService.Shared.Logging.csproj", "{718D7590-DAB4-43F4-BAA6-A35529425E10}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PrintService.Shared.Logging", "src\PrintService.Shared.Logging\PrintService.Shared.Logging.csproj", "{718D7590-DAB4-43F4-BAA6-A35529425E10}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PrintService.Shared.Result", "PrintService.Shared.Result\PrintService.Shared.Result.csproj", "{1451130A-E1F0-4710-AC46-B7A7A5804310}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PrintService.Shared.Result", "src\PrintService.Shared.Result\PrintService.Shared.Result.csproj", "{1451130A-E1F0-4710-AC46-B7A7A5804310}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{EA98D431-86A4-4ED6-99BD-C645F2453468}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{4D12B6C7-B21D-4FC7-BB35-0AD8F2CE35CB}"
+	ProjectSection(SolutionItems) = preProject
+		resources\docker-compose.yaml = resources\docker-compose.yaml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Otel", "Otel", "{376079E5-8ED2-4E54-838E-302E90C739AE}"
+	ProjectSection(SolutionItems) = preProject
+		resources\Otel\grafana_datasources.yaml = resources\Otel\grafana_datasources.yaml
+		resources\Otel\otel-collector-config.yaml = resources\Otel\otel-collector-config.yaml
+		resources\Otel\prometheus.yaml = resources\Otel\prometheus.yaml
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -71,8 +85,14 @@ Global
 		{C1D0C789-02E9-4AF3-A988-45008AA36B03} = {4396AB48-A596-4179-8965-64E602BE8429}
 		{4D585456-4EFD-4A80-A519-933015C0DCAA} = {59792586-4000-44D9-A4D9-03F218F40359}
 		{4247CA78-B6E1-48A9-86BA-F538D42A54F0} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{02EA681E-C7D8-13C7-8484-4AC65E1B71E8} = {EA98D431-86A4-4ED6-99BD-C645F2453468}
+		{036AEABA-F9EB-4099-AE72-72956C68D684} = {EA98D431-86A4-4ED6-99BD-C645F2453468}
+		{59792586-4000-44D9-A4D9-03F218F40359} = {EA98D431-86A4-4ED6-99BD-C645F2453468}
+		{8CA5D996-F285-4B30-BD1F-90DF75B597AD} = {EA98D431-86A4-4ED6-99BD-C645F2453468}
+		{4396AB48-A596-4179-8965-64E602BE8429} = {EA98D431-86A4-4ED6-99BD-C645F2453468}
 		{718D7590-DAB4-43F4-BAA6-A35529425E10} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{1451130A-E1F0-4710-AC46-B7A7A5804310} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{376079E5-8ED2-4E54-838E-302E90C739AE} = {4D12B6C7-B21D-4FC7-BB35-0AD8F2CE35CB}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {AE83ECF6-8931-4E42-A3D7-F59E7C94247A}

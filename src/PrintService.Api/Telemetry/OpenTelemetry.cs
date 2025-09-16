@@ -15,7 +15,7 @@ public static class OpenTelemetry
 
         services.AddOpenTelemetry()
             .ConfigureResource(r =>
-                r.AddService(configuration["AppName"] ?? "PrintService"))
+                r.AddService(configuration["AppName"]))
             .WithTracing(tracerProviderBuilder =>
             {
                 tracerProviderBuilder
@@ -41,7 +41,7 @@ public static class OpenTelemetry
             {
                 options.IncludeFormattedMessage = true;
                 options.SetResourceBuilder(ResourceBuilder.CreateDefault()
-                    .AddService(configuration["AppName"] ?? "PrintService"));
+                    .AddService(configuration["AppName"]));
                 options.AddConsoleExporter();
             });
         });

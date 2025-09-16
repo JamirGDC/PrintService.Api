@@ -4,8 +4,8 @@ services:
     container_name: open_telemetry_collector
     command: [ "--config=/etc/otel-collector-config.yaml" ]
     volumes:
-      - ./tools/telemetry/otel-collector-config.yaml:/etc/otel-collector-config.yaml
-      - ./tools/telemetry/logs:/etc/output:rw # Store the logs (not commited in git)
+      - ./Otel/otel-collector-config.yaml:/etc/otel-collector-config.yaml
+      - ./Otel/logs:/etc/output:rw # Store the logs (not commited in git)
     ports:
       - "8888:8888"   # Prometheus metrics exposed by the collector
       - "8889:8889"   # Prometheus exporter metrics
@@ -14,7 +14,7 @@ services:
       image: bitnami/prometheus
       container_name: prometheus
       volumes:
-        - ./tools/telemetry/prometheus.yaml:/etc/prometheus/prometheus.yml
+        - ./Otel/prometheus.yaml:/etc/prometheus/prometheus.yml
       ports:
         - 9090:9090
   grafana:
@@ -25,7 +25,7 @@ services:
         - GF_SECURITY_ADMIN_PASSWORD=admin
         - GF_USERS_ALLOW_SIGN_UP=false
       volumes:
-        - ./tools/telemetry/grafana_datasources.yaml:/etc/grafana/provisioning/datasources/all.yaml
+        - ./Otel/grafana_datasources.yaml:/etc/grafana/provisioning/datasources/all.yaml
       ports:
         - 3000:3000
   zipkin:
