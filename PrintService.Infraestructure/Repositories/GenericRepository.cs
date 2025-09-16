@@ -5,7 +5,7 @@ using PrintService.Infraestructure.Data;
 
 namespace PrintService.Infraestructure.Repositories;
 
-public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
+public class GenericRepository<T> : IGenericRepository<T> where T : class
 {
     protected DbSet<T> _dbSet;
     protected DbContext _dbContext;
@@ -24,7 +24,6 @@ public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
 
     public async Task<T> Create(T model, CancellationToken cancellationToken)
     {
-        model.CreatedUtc = DateTime.UtcNow;
         await _dbSet.AddAsync(model, cancellationToken);
         return model;
     }
@@ -35,7 +34,6 @@ public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
 
         if (existingData is null) throw new KeyNotFoundException("Model Not Found");
 
-        model.UpdatedUtc = DateTime.UtcNow;
 
         _dbContext.Entry(existingData).CurrentValues.SetValues(model);
 
@@ -52,5 +50,7 @@ public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
 
         return recordToDelete;
     }
+
+    public IQueryable<T> Query() => _dbSet.AsQueryable();
 }
 

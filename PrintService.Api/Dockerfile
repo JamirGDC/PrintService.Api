@@ -1,0 +1,29 @@
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
+USER $APP_UID
+WORKDIR /app
+EXPOSE 8080
+EXPOSE 8081
+
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+ARG BUILD_CONFIGURATION=Release
+WORKDIR /src
+COPY ["PrintService.Api/PrintService.Api.csproj", "PrintService.Api/"]
+COPY ["PrintService.Application/PrintService.Application.csproj", "PrintService.Application/"]
+COPY ["PrintService.Domain/PrintService.Domain.csproj", "PrintService.Domain/"]
+COPY ["PrintService.Shared/PrintService.Shared.csproj", "PrintService.Shared/"]
+COPY ["PrintService.Shared.Logging/PrintService.Shared.Logging.csproj", "PrintService.Shared.Logging/"]
+COPY ["PrintService.Shared.Result/PrintService.Shared.Result.csproj", "PrintService.Shared.Result/"]
+COPY ["PrintService.Infraestructure/PrintService.Infraestructure.csproj", "PrintService.Infraestructure/"]
+RUN dotnet restore "./PrintService.Api/PrintService.Api.csproj"
+COPY . .
+WORKDIR "/src/PrintService.Api"
+RUN dotnet build "./PrintService.Api.csproj" -c $BUILD_CONFIGURATION -o /app/build
+
+FROM build AS publish
+ARG BUILD_CONFIGURATION=Release
+RUN dotnet publish "./PrintService.Api.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+
+FROM base AS final
+WORKDIR /app
+COPY --from=publish /app/publish .
+ENTRYPOINT ["dotnet", "PrintService.Api.dll"]

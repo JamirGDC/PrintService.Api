@@ -15,8 +15,17 @@ public static class DependencyInjection
             options.UseSqlServer(connectionString));
 
         services.AddScoped<IUnitOfWork, UnitOfWork.UnitOfWork>();
-        services.AddScoped<IPrintJobRepository, PrintJobRepository>();
-        services.AddScoped<IDeviceRepository, DeviceRepository>();
+        services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+    
         return services;
+    }
+
+    public static IServiceCollection AddMSSQLHealthCheck(this IServiceCollection serviceCollection,
+        Func<IServiceProvider, Task<string>> connectionString)
+    {
+        ServiceProvider serviceProvider = serviceCollection.BuildServiceProvider();
+        string mssqlConnectionString = connectionString.Invoke(serviceProvider).Result;
+        serviceCollection.AddHealthChecks().AddSqlServer(mssqlConnectionString);
+        return serviceCollection;
     }
 }

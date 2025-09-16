@@ -6,7 +6,7 @@ namespace PrintService.Application.Utilities.Mappers;
 
 public static class PrintJobMappers
 {
-    public static PrintJob ToDomain(this CreateJobRequestDto createJob)
+    public static PrintJob ToDomain(this CreateJobRequestDto createJob, string region)
     {
         return new PrintJob
         {
@@ -14,7 +14,7 @@ public static class PrintJobMappers
             PrinterKey = createJob.PrinterKey,
             ContentType = createJob.ContentType,
             Payload = createJob.Payload,
-            Region = "DEU",
+            Region = region,
             Status = 0
         };
     }

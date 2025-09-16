@@ -3,5 +3,6 @@
 public interface IRequestContext
 {
     string Region { get; set; }
-    //string? IdempotencyKey { get; }
+    string CallerId { get; set; }
+    Guid IdempotencyKey { get; set; }
 }

@@ -9,19 +9,26 @@ public class IdempotencyKeyConfiguration : EntityTypeConfiguration<IdempotencyKe
     protected override void ConfigurateTableName(EntityTypeBuilder<IdempotencyKey> builder)
     {
         builder.ToTable("IdempotencyKeys");
+
     }
 
     protected override void ConfigurateConstraints(EntityTypeBuilder<IdempotencyKey> builder)
     {
         builder.HasKey(i => new { i.CallerId, i.Key });
-        builder.HasOne<PrintJob>()
+
+        builder.HasIndex(i => new { i.CallerId, i.Key }).IsUnique();
+
+        builder.HasOne(i => i.Job)
             .WithMany()
-            .HasForeignKey(i => i.JobId);
+            .HasForeignKey(i => i.JobId)
+            .OnDelete(DeleteBehavior.Restrict);
     }
 
     protected override void ConfigurateProperties(EntityTypeBuilder<IdempotencyKey> builder)
     {
         builder.Property(p => p.CallerId).HasMaxLength(128).IsRequired();
         builder.Property(p => p.Key).HasMaxLength(64).IsRequired();
+        builder.Property(p => p.CreatedUtc).IsRequired();
+        builder.Property(p => p.ExpiresUtc);
     }
 }

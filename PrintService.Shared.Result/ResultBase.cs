@@ -1,6 +1,6 @@
 ﻿using System.Net;
 
-namespace PrintService.Domain.Common.Result;
+namespace PrintService.Shared.Result;
 
 public abstract class ResultBase
 {

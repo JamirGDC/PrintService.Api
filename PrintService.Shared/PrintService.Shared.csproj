@@ -6,4 +6,9 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\PrintService.Shared.Logging\PrintService.Shared.Logging.csproj" />
+    <ProjectReference Include="..\PrintService.Shared.Result\PrintService.Shared.Result.csproj" />
+  </ItemGroup>
+
 </Project>

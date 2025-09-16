@@ -1,6 +1,6 @@
 ﻿using PrintService.Application.DTOs.Request;
 using PrintService.Application.DTOs.Response;
-using PrintService.Domain.Common.Result;
+using PrintService.Shared.Result;
 
 namespace PrintService.Application.Interfaces.Services;
 

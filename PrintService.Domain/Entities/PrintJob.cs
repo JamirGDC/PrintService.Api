@@ -1,7 +1,20 @@
-﻿namespace PrintService.Domain.Entities;
+﻿using System.ComponentModel.DataAnnotations;
 
-public class PrintJob : BaseEntity
+namespace PrintService.Domain.Entities;
+
+public class PrintJob
 {
+    [Key]
+    public Guid Id { get; set; } = Guid.NewGuid();
+
+    public DateTime CreatedUtc { get; set; } = DateTime.UtcNow;
+
+    public DateTime? UpdatedUtc { get; set; }
+
+    public DateTime? ExpiresUtc { get; set; }
+
+    [Timestamp]
+    public byte[]? RowVersion { get; set; }
     public string UserId { get; set; } = string.Empty;
     public string? DeviceId { get; set; }
     public string Region { get; set; } = string.Empty;

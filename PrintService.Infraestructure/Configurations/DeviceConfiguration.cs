@@ -4,7 +4,7 @@ using PrintService.Domain.Entities;
 
 namespace PrintService.Infraestructure.Configurations;
 
-public class DeviceConfiguration : EntityTypeBaseConfiguration<Device>
+public class DeviceConfiguration : EntityTypeConfiguration<Device>
 {
     protected override void ConfigurateTableName(EntityTypeBuilder<Device> builder)
     {

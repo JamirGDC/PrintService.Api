@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using PrintService.Application.DTOs.Request;
 using PrintService.Application.DTOs.Response;
 using PrintService.Application.Interfaces.Services;
-using PrintService.Domain.Common.Result;
+using PrintService.Shared.Result;
 
 namespace PrintService.Api.Controllers;
 
@@ -20,7 +20,7 @@ public class DeviceController : ControllerBase
 
     [HttpPost("register")]
     [Authorize(Policy = "print.jobs.read")]
-    public async Task<Result<RegisterDeviceResponseDto>> RegisterDevice([FromBody] RegisterDeviceRequestDto request, CancellationToken cancellationToken)
+    public async Task<Result<RegisterDeviceResponseDto>> RegisterDevice([FromHeader(Name = "x-region")] string region, [FromBody] RegisterDeviceRequestDto request, CancellationToken cancellationToken)
     {
         return await _deviceService.RegisterDeviceAsync(request, cancellationToken);
     }

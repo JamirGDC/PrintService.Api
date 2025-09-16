@@ -9,9 +9,11 @@
   <ItemGroup>
     <ProjectReference Include="..\PrintService.Application\PrintService.Application.csproj" />
     <ProjectReference Include="..\PrintService.Domain\PrintService.Domain.csproj" />
+    <ProjectReference Include="..\PrintService.Shared\PrintService.Shared.csproj" />
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="AspNetCore.HealthChecks.SqlServer" Version="9.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.3.0" />
     <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.3.0" />
     <PackageReference Include="Microsoft.AspNetCore.Http.Extensions" Version="2.3.0" />

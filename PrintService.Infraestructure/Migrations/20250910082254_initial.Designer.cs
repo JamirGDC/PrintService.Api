@@ -12,8 +12,8 @@ using PrintService.Infraestructure.Data;
 namespace PrintService.Infraestructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250902090825_updatedevice")]
-    partial class updatedevice
+    [Migration("20250910082254_initial")]
+    partial class initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -86,7 +86,7 @@ namespace PrintService.Infraestructure.Migrations
                     b.Property<DateTime>("CreatedUtc")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("ExpiresUtc")
+                    b.Property<DateTime?>("ExpiresUtc")
                         .HasColumnType("datetime2");
 
                     b.Property<Guid>("JobId")
@@ -95,6 +95,9 @@ namespace PrintService.Infraestructure.Migrations
                     b.HasKey("CallerId", "Key");
 
                     b.HasIndex("JobId");
+
+                    b.HasIndex("CallerId", "Key")
+                        .IsUnique();
 
                     b.ToTable("IdempotencyKeys", (string)null);
                 });
@@ -294,11 +297,13 @@ namespace PrintService.Infraestructure.Migrations
 
             modelBuilder.Entity("PrintService.Domain.Entities.IdempotencyKey", b =>
                 {
-                    b.HasOne("PrintService.Domain.Entities.PrintJob", null)
+                    b.HasOne("PrintService.Domain.Entities.PrintJob", "Job")
                         .WithMany()
                         .HasForeignKey("JobId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("Job");
                 });
 #pragma warning restore 612, 618
         }

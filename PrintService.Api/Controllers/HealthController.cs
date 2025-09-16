@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using HealthChecks.UI.Client;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 
 namespace PrintService.Api.Controllers;
 
@@ -6,12 +8,27 @@ namespace PrintService.Api.Controllers;
 [Route("")]
 public class HealthController : ControllerBase
 {
+    private readonly HealthCheckService _healthCheckService;
+
+    public HealthController(HealthCheckService healthCheckService)
+    {
+        _healthCheckService = healthCheckService;
+    }
+
+
     [HttpGet("healthz")]
-    public IActionResult Health() => Ok("Alive");
+    public IActionResult Healthz()
+    {
+        return Ok("ok");
+    }
+
 
     [HttpGet("readyz")]
-    public IActionResult Ready()
+    public async Task Readyz()
     {
-        return Ok("Ready");
+        var report = await _healthCheckService.CheckHealthAsync();
+        Response.ContentType = "application/json";
+        await UIResponseWriter.WriteHealthCheckUIResponse(HttpContext, report);
     }
+
 }

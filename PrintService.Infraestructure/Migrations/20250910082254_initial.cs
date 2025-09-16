@@ -15,21 +15,20 @@ namespace PrintService.Infraestructure.Migrations
                 name: "Devices",
                 columns: table => new
                 {
-                    DeviceId = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
+                    Id = table.Column<Guid>(type: "uniqueidentifier", maxLength: 128, nullable: false),
+                    CreatedUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedUtc = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    ExpiresUtc = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    RowVersion = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: true),
                     UserId = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: true),
                     AgentRegion = table.Column<string>(type: "nvarchar(32)", maxLength: 32, nullable: false),
                     MachineName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
                     PrintersJson = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    LastSeenUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    CreatedUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UpdatedUtc = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    ExpiresUtc = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    RowVersion = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: true)
+                    LastSeenUtc = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Devices", x => x.DeviceId);
+                    table.PrimaryKey("PK_Devices", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -56,6 +55,10 @@ namespace PrintService.Infraestructure.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CreatedUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedUtc = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    ExpiresUtc = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    RowVersion = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: true),
                     UserId = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
                     DeviceId = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: true),
                     Region = table.Column<string>(type: "nvarchar(32)", maxLength: 32, nullable: false),
@@ -71,11 +74,7 @@ namespace PrintService.Infraestructure.Migrations
                     ClaimedUtc = table.Column<DateTime>(type: "datetime2", nullable: true),
                     CompletedUtc = table.Column<DateTime>(type: "datetime2", nullable: true),
                     ErrorCode = table.Column<string>(type: "nvarchar(64)", maxLength: 64, nullable: true),
-                    ErrorMessage = table.Column<string>(type: "nvarchar(1024)", maxLength: 1024, nullable: true),
-                    CreatedUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UpdatedUtc = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    ExpiresUtc = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    RowVersion = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: true)
+                    ErrorMessage = table.Column<string>(type: "nvarchar(1024)", maxLength: 1024, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -121,7 +120,7 @@ namespace PrintService.Infraestructure.Migrations
                     Key = table.Column<string>(type: "nvarchar(64)", maxLength: 64, nullable: false),
                     JobId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     CreatedUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ExpiresUtc = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    ExpiresUtc = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -131,13 +130,19 @@ namespace PrintService.Infraestructure.Migrations
                         column: x => x.JobId,
                         principalTable: "PrintJobs",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Devices_UserId_AgentRegion",
                 table: "Devices",
                 columns: new[] { "UserId", "AgentRegion" });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_IdempotencyKeys_CallerId_Key",
+                table: "IdempotencyKeys",
+                columns: new[] { "CallerId", "Key" },
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_IdempotencyKeys_JobId",

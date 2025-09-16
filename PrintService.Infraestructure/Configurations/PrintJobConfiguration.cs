@@ -4,7 +4,7 @@ using PrintService.Domain.Entities;
 
 namespace PrintService.Infraestructure.Configurations;
 
-public class PrintJobConfiguration : EntityTypeBaseConfiguration<PrintJob>
+public class PrintJobConfiguration : EntityTypeConfiguration<PrintJob>
 {
     protected override void ConfigurateTableName(EntityTypeBuilder<PrintJob> builder)
     {

@@ -2,9 +2,9 @@
 
 namespace PrintService.Infraestructure.Context;
 
-
 public class RequestContext : IRequestContext
 {
     public string Region { get; set; }
-    //public string IdempotencyKey { get; set; } = default!;
+    public string CallerId { get; set; }
+    public Guid IdempotencyKey { get; set; }
 }

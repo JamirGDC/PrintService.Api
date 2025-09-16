@@ -11,9 +11,14 @@ public class RequestContextMiddleware
 {
     private readonly RequestDelegate _next;
 
-    private static readonly PathString[] _validatedPaths =
+    private static readonly PathString[] _validatedRegionIdempotencyPaths =
     [
         "/v1/jobs"
+    ];
+
+    private static readonly PathString[] _validatedOnlyRegionPaths =
+    [
+        "/v1/devices/register"
     ];
 
     public RequestContextMiddleware(RequestDelegate next)
@@ -23,34 +28,44 @@ public class RequestContextMiddleware
 
     public async Task InvokeAsync(HttpContext context)
     {
-        if (!_validatedPaths.Any(p => context.Request.Path.StartsWithSegments(p)))
-        {
-            await _next(context);
-            return;
-        }
-
         var requestContext = context.RequestServices.GetRequiredService<IRequestContext>();
 
-        if (!context.Request.Headers.TryGetValue("x-region", out var region))
+        if (_validatedRegionIdempotencyPaths.Any(p => context.Request.Path.StartsWithSegments(p, StringComparison.OrdinalIgnoreCase)))
         {
-            await WriteErrorResponse(context, HttpStatusCode.BadRequest, "Missing x-region header");
-            return;
+            if (!context.Request.Headers.TryGetValue("x-region", out var region))
+            {
+                await WriteErrorResponse(context, HttpStatusCode.BadRequest, "Missing x-region header");
+                return;
+            }
+
+            if (!context.Request.Headers.TryGetValue("x-idempotency-key", out var idempotencyKey))
+            {
+                await WriteErrorResponse(context, HttpStatusCode.BadRequest, "Missing x-idempotency-key header");
+                return;
+            }
+
+            if (!Guid.TryParse(idempotencyKey, out var parsedKey))
+            {
+                await WriteErrorResponse(context, HttpStatusCode.BadRequest, "Invalid x-idempotency-key");
+                return;
+            }
+
+            requestContext.Region = region!;
+            requestContext.CallerId = context.User?.Identity?.Name ?? "unknown";
+            requestContext.IdempotencyKey = parsedKey;
         }
+        else if (_validatedOnlyRegionPaths.Any(p => context.Request.Path.StartsWithSegments(p, StringComparison.OrdinalIgnoreCase)))
+        {
+            if (!context.Request.Headers.TryGetValue("x-region", out var region))
+            {
+                await WriteErrorResponse(context, HttpStatusCode.BadRequest, "Missing x-region header");
+                return;
+            }
 
-        //if (!context.Request.Headers.TryGetValue("x-idempotency-key", out var idempotencyKey))
-        //{
-        //    await WriteErrorResponse(context, HttpStatusCode.BadRequest, "Missing x-idempotency-key header");
-        //    return;
-        //}
-
-        //if (!Guid.TryParse(idempotencyKey, out _))
-        //{
-        //    await WriteErrorResponse(context, HttpStatusCode.BadRequest, "Invalid x-idempotency-key");
-        //    return;
-        //}
-
-        requestContext.Region = region!;
-        //requestContext.IdempotencyKey = idempotencyKey!;
+            requestContext.Region = region!;
+            requestContext.CallerId = context.User?.Identity?.Name ?? "unknown";
+            requestContext.IdempotencyKey = Guid.Empty;
+        }
 
         await _next(context);
     }
@@ -68,4 +83,5 @@ public class RequestContextMiddleware
 
         await context.Response.WriteAsync(JsonSerializer.Serialize(error));
     }
+
 }

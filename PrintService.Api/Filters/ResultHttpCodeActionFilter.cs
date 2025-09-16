@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
-using PrintService.Domain.Common.Result;
+using PrintService.Shared.Result;
 
 namespace PrintService.Api.Filters;
 

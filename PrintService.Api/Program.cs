@@ -2,14 +2,21 @@ using Microsoft.OpenApi.Models;
 using PrintService.Api.Extensions;
 using PrintService.Api.Filters;
 using PrintService.Api.Hubs;
+using PrintService.Api.Middleware;
+using PrintService.Api.Telemetry;
 using PrintService.Infraestructure.Data;
 using PrintService.Infraestructure.Extensions.Middleware;
+using PrintService.Shared.Logging;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Host.ConfigureSerilog();
 
 builder.Services.AddControllers(options =>
 {
     options.Filters.Add<ResultHttpCodeActionFilter>();
+    options.Filters.Add<LoggingFilters>();
 });
 
 builder.Services.AddEndpointsApiExplorer();
@@ -38,8 +45,15 @@ builder.Services.AddSwaggerGen(c =>
             Array.Empty<string>()
         }
     });
+});
 
-    c.OperationFilter<RequiredHeadersOperationFilter>();
+//builder.Configuration.AddConfiguration(HealthCheckHelper.BuildBasicHealthCheck());
+builder.Services.AddHealthChecks();
+builder.Services.AddHealthChecksUI().AddInMemoryStorage();
+builder.Services.AddMSSQLHealthCheck(async provider =>
+{
+    var configuration = provider.GetRequiredService<IConfiguration>();
+    return configuration.GetConnectionString("DefaultConnection")!;
 });
 
 builder.Services.AddJwtAuthentication(builder.Configuration);
@@ -48,6 +62,12 @@ builder.Services.AddScopePolicies();
 builder.Services.AddInfrastructure(builder.Configuration.GetConnectionString("DefaultConnection"));
 
 builder.Services.AddApiDependencies();
+
+builder.Services.AddLogging(logger => logger.AddSerilog());
+
+builder.Services.AddTelemetry(builder.Configuration);
+builder.Host.AddLogging(builder.Configuration);
+
 
 builder.Services.AddCors(options =>
 {
@@ -79,9 +99,14 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.UseMiddleware<RequestContextMiddleware>();
-
+app.UseMiddleware<IdempotencyMiddleware>();
+app.UseMiddleware<LoggingEnrichmentMiddleware>();
 app.MapControllers();
 
+app.UseHealthChecksUI(config =>
+{
+    config.UIPath = "/healthz-ui";
+});
 
 app.MapHub<PrintHub>("/hubs/print");
 

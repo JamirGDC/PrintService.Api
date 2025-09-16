@@ -4,7 +4,7 @@ using PrintService.Domain.Entities;
 
 namespace PrintService.Infraestructure.Configurations;
 
-public abstract class EntityTypeBaseConfiguration<T> : IEntityTypeConfiguration<T> where T : BaseEntity
+public abstract class EntityTypeBaseConfiguration<T> : IEntityTypeConfiguration<T> where T : class
 {
     public void Configure(EntityTypeBuilder<T> builder)
     {
