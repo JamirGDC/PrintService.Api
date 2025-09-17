@@ -32,7 +32,6 @@
   <ItemGroup>
     <Folder Include="Extensions\Middleware\" />
     <Folder Include="Services\" />
-    <Folder Include="SignalR\" />
   </ItemGroup>
 
 </Project>

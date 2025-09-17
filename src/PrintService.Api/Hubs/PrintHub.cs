@@ -2,6 +2,7 @@
 using PrintService.Application.Interfaces.Services;
 using System.Collections.Concurrent;
 using Microsoft.AspNetCore.Authorization;
+using PrintService.Infraestructure.SignalR;
 
 namespace PrintService.Api.Hubs;
 
@@ -9,30 +10,43 @@ namespace PrintService.Api.Hubs;
 public class PrintHub : Hub
 {
     private readonly ILogger<PrintHub> _logger;
-    private static readonly ConcurrentDictionary<string, (string ClientId,  string? Region)> _connections
-        = new();
+    private readonly IConnectionManager _connections;
 
-    public PrintHub(ILogger<PrintHub> logger)
+    public PrintHub(ILogger<PrintHub> logger, IConnectionManager connections)
     {
         _logger = logger;
+        _connections = connections;
     }
 
     public override async Task OnConnectedAsync()
     {
-        var http = Context.GetHttpContext();
-
         var clientId = Context.User?.FindFirst("client_id")?.Value;
+        var region = Context.GetHttpContext()?.Request.Query["region"];
 
-        var region = http?.Request.Query["region"];
+        if (string.IsNullOrEmpty(clientId))
+        {
+            _logger.LogWarning("Connection rejected: no client_id");
+            Context.Abort();
+            return;
+        }
 
-        _connections[Context.ConnectionId] = (clientId, region);
+        _connections.AddConnection(Context.ConnectionId, clientId, region);
 
-        await Groups.AddToGroupAsync(Context.ConnectionId, $"agent:{clientId}");
+        await Groups.AddToGroupAsync(Context.ConnectionId, HubGroups.Agent(clientId));
 
         if (!string.IsNullOrEmpty(region))
-            await Groups.AddToGroupAsync(Context.ConnectionId, $"region:{region}");
+            await Groups.AddToGroupAsync(Context.ConnectionId, HubGroups.Region(region!));
+
+        _logger.LogInformation("Client {ClientId} connected with region {Region}", clientId, region);
 
         await base.OnConnectedAsync();
     }
 
+    public override async Task OnDisconnectedAsync(Exception? exception)
+    {
+        _connections.RemoveConnection(Context.ConnectionId);
+        _logger.LogInformation("Client disconnected: {ConnectionId}", Context.ConnectionId);
+
+        await base.OnDisconnectedAsync(exception);
+    }
 }

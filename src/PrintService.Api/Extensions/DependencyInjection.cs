@@ -1,13 +1,14 @@
-﻿using Microsoft.OpenApi.Models;
-using PrintService.Api.Filters;
-using PrintService.Api.Hubs;
-using PrintService.Application.Interfaces;
-using PrintService.Application.Interfaces.Services;
-using PrintService.Application.Services;
-using PrintService.Infraestructure.Context;
-using PrintService.Infraestructure.Security;
+﻿namespace PrintService.Api.Extensions;
 
-namespace PrintService.Api.Extensions;
+using Microsoft.OpenApi.Models;
+using Filters;
+using Hubs;
+using Application.Interfaces;
+using Application.Interfaces.Services;
+using Application.Services;
+using Infraestructure.Context;
+using Infraestructure.Security;
+using Infraestructure.SignalR;
 
 public static class DependencyInjection
 {
@@ -54,7 +55,10 @@ public static class DependencyInjection
 
         // SignalR
         services.AddSignalR();
+        services.AddScoped<INotificationHubContext, PrintHubContext>();
         services.AddScoped<INotificationService, SignalRNotificationService>();
+
+
 
         //Application Services
         services.AddScoped<IJobService, JobService>();
