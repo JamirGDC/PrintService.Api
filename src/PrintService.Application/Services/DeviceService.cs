@@ -1,24 +1,17 @@
-﻿using System.Net;
-using PrintService.Application.DTOs.Request;
-using PrintService.Application.DTOs.Response;
-using PrintService.Application.Interfaces;
-using PrintService.Application.Interfaces.Repositories;
+﻿namespace PrintService.Application.Services;
+
+using System.Net;
+using DTOs.Request;
+using DTOs.Response;
+using Interfaces;
+using Interfaces.Repositories;
 using PrintService.Application.Interfaces.Services;
-using PrintService.Application.Utilities.Mappers;
-using PrintService.Shared.Result;
-using PrintService.Domain.Entities;
+using Utilities.Mappers;
+using Shared.Result;
+using Domain.Entities;
 
-namespace PrintService.Application.Services;
-
-public class DeviceService(
-    IUnitOfWork unitOfWork,
-    IRequestContext requestContext,
-    IGenericRepository<Device> deviceRepository)
-    : IDeviceService
+public class DeviceService(IUnitOfWork unitOfWork, IRequestContext requestContext, IGenericRepository<Device> deviceRepository) : IDeviceService
 {
-    private readonly IRequestContext _requestContext = requestContext;
-    private readonly IGenericRepository<Device> _deviceRepository = deviceRepository;
-
     public async Task<Result<RegisterDeviceResponseDto>> RegisterDeviceAsync(RegisterDeviceRequestDto registerDevice, CancellationToken cancellationToken)
     {
         var deviceInDb = await deviceRepository.GetById(registerDevice.DeviceId);
@@ -33,5 +26,4 @@ public class DeviceService(
 
         return Result<RegisterDeviceResponseDto>.Success(HttpStatusCode.OK).WithPayload(newDevice.ToResponse());
     }
-
 }

@@ -1,12 +1,14 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Identity.Client;
-using PrintService.Application.DTOs.Request;
-using PrintService.Application.DTOs.Response;
-using PrintService.Application.Interfaces.Services;
-using PrintService.Shared.Result;
+﻿using PrintService.Api.Filters;
 
 namespace PrintService.Api.Controllers;
+
+using Application.DTOs.Request;
+using Application.DTOs.Response;
+using Application.Interfaces.Services;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using PrintService.Api.Middleware;
+using Shared.Result;
 
 [ApiController]
 [Route("v1/[controller]")]
@@ -21,6 +23,8 @@ public class JobsController : ControllerBase
 
     [HttpPost]
     [Authorize(Policy = "print.jobs.write")]
+    [RequireRegionAndIdempotency]
+    [Idempotent]
     public async Task<Result<CreateJobResponseDto>> CreateJob([FromHeader(Name = "x-region")] string region, [FromHeader(Name = "x-idempotency-key")] Guid idempotencyKey, [FromBody] CreateJobRequestDto createJobRequest, CancellationToken cancellationToken)
     {
         return await _jobService.CreateJobAsync(createJobRequest, cancellationToken);

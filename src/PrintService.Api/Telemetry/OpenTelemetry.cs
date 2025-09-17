@@ -12,10 +12,10 @@ public static class OpenTelemetry
     public static void AddTelemetry(this IServiceCollection services, IConfiguration configuration)
     {
         var otlpEndpoint = configuration["OpenTelemetry:Endpoint"];
-
+        var appName = configuration["AppName"];
         services.AddOpenTelemetry()
             .ConfigureResource(r =>
-                r.AddService(configuration["AppName"]))
+                r.AddService(appName))
             .WithTracing(tracerProviderBuilder =>
             {
                 tracerProviderBuilder
@@ -34,6 +34,8 @@ public static class OpenTelemetry
 
     public static void AddLogging(this IHostBuilder builder, IConfiguration configuration)
     {
+        var appName = configuration["AppName"];
+
         builder.ConfigureLogging(logging =>
         {
             logging.ClearProviders();
@@ -41,7 +43,7 @@ public static class OpenTelemetry
             {
                 options.IncludeFormattedMessage = true;
                 options.SetResourceBuilder(ResourceBuilder.CreateDefault()
-                    .AddService(configuration["AppName"]));
+                    .AddService(appName));
                 options.AddConsoleExporter();
             });
         });

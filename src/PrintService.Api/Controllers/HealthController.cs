@@ -1,8 +1,8 @@
-﻿using HealthChecks.UI.Client;
+﻿namespace PrintService.Api.Controllers;
+
+using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
-
-namespace PrintService.Api.Controllers;
 
 [ApiController]
 [Route("")]

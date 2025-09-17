@@ -1,89 +1,39 @@
-using Microsoft.OpenApi.Models;
 using PrintService.Api.Extensions;
-using PrintService.Api.Filters;
 using PrintService.Api.Hubs;
 using PrintService.Api.Middleware;
 using PrintService.Api.Telemetry;
 using PrintService.Infraestructure.Data;
 using PrintService.Infraestructure.Extensions.Middleware;
+using PrintService.Infraestructure.Security;
 using PrintService.Shared.Logging;
-using Serilog;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Logging
 builder.Host.ConfigureSerilog();
+builder.Host.AddLogging(builder.Configuration);
 
-builder.Services.AddControllers(options =>
-{
-    options.Filters.Add<ResultHttpCodeActionFilter>();
-    options.Filters.Add<LoggingFilters>();
-});
+// API + Servicios
+builder.Services.AddApiDependencies();
+builder.Services.AddInfrastructure(builder.Configuration.GetConnectionString("DefaultConnection")!);
+builder.Services.AddTelemetry(builder.Configuration);
 
-builder.Services.AddEndpointsApiExplorer();
-
-builder.Services.AddSwaggerGen(c =>
-{
-    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-    {
-        In = ParameterLocation.Header,
-        Description = "Please enter JWT with Bearer into field",
-        Name = "Authorization",
-        Type = SecuritySchemeType.ApiKey,
-        Scheme = "Bearer"
-    });
-    c.AddSecurityRequirement(new OpenApiSecurityRequirement
-    {
-        {
-            new OpenApiSecurityScheme
-            {
-                Reference = new OpenApiReference
-                {
-                    Type = ReferenceType.SecurityScheme,
-                    Id = "Bearer"
-                }
-            },
-            Array.Empty<string>()
-        }
-    });
-});
-
-//builder.Configuration.AddConfiguration(HealthCheckHelper.BuildBasicHealthCheck());
+// HealthChecks
 builder.Services.AddHealthChecks();
-builder.Services.AddHealthChecksUI().AddInMemoryStorage();
 builder.Services.AddMSSQLHealthCheck(async provider =>
 {
     var configuration = provider.GetRequiredService<IConfiguration>();
     return configuration.GetConnectionString("DefaultConnection")!;
 });
+builder.Services.AddHealthChecksUI().AddInMemoryStorage();
 
-builder.Services.AddJwtAuthentication(builder.Configuration);
-builder.Services.AddScopePolicies();
-
-builder.Services.AddInfrastructure(builder.Configuration.GetConnectionString("DefaultConnection"));
-
-builder.Services.AddApiDependencies();
-
-builder.Services.AddLogging(logger => logger.AddSerilog());
-
-builder.Services.AddTelemetry(builder.Configuration);
-builder.Host.AddLogging(builder.Configuration);
-
-
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("AllowAll", policy =>
-    {
-        policy.SetIsOriginAllowed(_ => true)
-            .AllowAnyMethod()
-            .AllowAnyHeader()
-            .AllowCredentials();
-    });
-});
-
-builder.Services.AddSignalR();
+builder.Services.Configure<JwtOptions>(
+    builder.Configuration.GetSection("Jwt"));
 
 var app = builder.Build();
 
+// Middleware y endpoints
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -91,23 +41,15 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
 app.UseCors("AllowAll");
-
 app.UseAuthentication();
-
 app.UseAuthorization();
 
-app.UseMiddleware<RequestContextMiddleware>();
 app.UseMiddleware<IdempotencyMiddleware>();
 app.UseMiddleware<LoggingEnrichmentMiddleware>();
+
 app.MapControllers();
-
-app.UseHealthChecksUI(config =>
-{
-    config.UIPath = "/healthz-ui";
-});
-
+app.UseHealthChecksUI(config => config.UIPath = "/healthz-ui");
 app.MapHub<PrintHub>("/hubs/print");
 
 app.Run();

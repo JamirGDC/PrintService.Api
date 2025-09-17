@@ -9,7 +9,6 @@
   <ItemGroup>
     <ProjectReference Include="..\PrintService.Application\PrintService.Application.csproj" />
     <ProjectReference Include="..\PrintService.Domain\PrintService.Domain.csproj" />
-    <ProjectReference Include="..\PrintService.Shared\PrintService.Shared.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -31,6 +30,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Extensions\Middleware\" />
     <Folder Include="Services\" />
     <Folder Include="SignalR\" />
   </ItemGroup>

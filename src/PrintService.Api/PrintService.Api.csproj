@@ -31,7 +31,7 @@
   <ItemGroup>
     <ProjectReference Include="..\PrintService.Application\PrintService.Application.csproj" />
     <ProjectReference Include="..\PrintService.Infraestructure\PrintService.Infraestructure.csproj" />
-    <ProjectReference Include="..\PrintService.Shared\PrintService.Shared.csproj" />
+    <ProjectReference Include="..\PrintService.Shared.Logging\PrintService.Shared.Logging.csproj" />
   </ItemGroup>
 
   <ItemGroup>

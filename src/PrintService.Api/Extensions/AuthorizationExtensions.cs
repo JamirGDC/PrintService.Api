@@ -1,30 +1,35 @@
 ﻿namespace PrintService.Api.Extensions;
 
+using PrintService.Domain.Enums;
+using System.ComponentModel;
+
+
 public static class AuthorizationExtensions
 {
     public static IServiceCollection AddScopePolicies(this IServiceCollection services)
     {
         services.AddAuthorization(options =>
         {
-            options.AddPolicy("print.jobs.read", policy =>
+            foreach (var scope in Enum.GetValues<Scopes>())
             {
-                policy.RequireAuthenticatedUser();
-                policy.RequireClaim("scope", "print.jobs.read");
-            });
+                var scopeName = ((Scopes)scope).GetDescription();
 
-            options.AddPolicy("print.jobs.write", policy =>
-            {
-                policy.RequireAuthenticatedUser();
-                policy.RequireClaim("scope", "print.jobs.write");
-            });
-
-            options.AddPolicy("print.jobs.ack", policy =>
-            {
-                policy.RequireAuthenticatedUser();
-                policy.RequireClaim("scope", "print.jobs.ack");
-            });
+                options.AddPolicy(scopeName, policy =>
+                {
+                    policy.RequireAuthenticatedUser();
+                    policy.RequireClaim("scope", scopeName);
+                });
+            }
         });
 
         return services;
+    }
+
+    public static string GetDescription(this Enum value)
+    {
+        var field = value.GetType().GetField(value.ToString());
+        var attribute = field?.GetCustomAttributes(typeof(DescriptionAttribute), false)
+            .FirstOrDefault() as DescriptionAttribute;
+        return attribute?.Description ?? value.ToString();
     }
 }

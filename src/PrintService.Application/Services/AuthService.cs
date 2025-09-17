@@ -1,67 +1,54 @@
 ﻿using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
+using PrintService.Application.DTOs;
 using PrintService.Application.DTOs.Request;
 using PrintService.Application.DTOs.Response;
+using PrintService.Application.Interfaces;
 using PrintService.Application.Interfaces.Services;
 using PrintService.Shared.Result;
-using System.IdentityModel.Tokens.Jwt;
 using System.Net;
 using System.Security.Claims;
-using System.Text;
 
 namespace PrintService.Application.Services;
 
-public class AuthService : IAuthService
+public class AuthService(IJwtToken jwtToken, IConfiguration config) : IAuthService
 {
-    private readonly IConfiguration _config;
-
-    public AuthService(IConfiguration config)
-    {
-        _config = config;
-    }
 
     public async Task<Result<TokenResponseDto>> GenerateTokenAsync(TokenRequestDto request)
     {
-        var clients = _config.GetSection("AuthClients").Get<List<AuthClient>>() ?? [];
-        var client = clients.FirstOrDefault(c =>
-            c.ClientId == request.ClientId && c.ClientSecret == request.ClientSecret);
-
-        if (client is null)
-            return Result<TokenResponseDto>.Failure(HttpStatusCode.BadRequest).WithDescription("Invalid client credentials");
-
-        var claims = new List<Claim>
+        if (!ValidateClient(request.ClientId, request.ClientSecret, out var client))
         {
-            new Claim("client_id", request.ClientId),
-        };
-
-        foreach (var scope in client.AllowedScopes)
-        {
-            claims.Add(new Claim("scope", scope));
+            return Result<TokenResponseDto>
+                .Failure(HttpStatusCode.BadRequest)
+                .WithDescription("Invalid client credentials");
         }
 
-        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]!));
-        var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-        var expires = DateTime.UtcNow.AddMinutes(1);
+        var claims = new List<Claim> { new Claim("client_id", request.ClientId) };
 
-        var token = new JwtSecurityToken(
-            issuer: _config["Jwt:Issuer"],
-            audience: _config["Jwt:Audience"],
-            claims: claims,
-            expires: expires,
-            signingCredentials: creds
-        );
+        claims.AddRange(client!.AllowedScopes.Select(scope => new Claim("scope", scope)));
+
+        var accessToken = jwtToken.GenerateToken(claims);
 
         var response = new TokenResponseDto
         {
-            AccessToken = new JwtSecurityTokenHandler().WriteToken(token),
-            ExpiresIn = (int)(expires - DateTime.UtcNow).TotalSeconds,
-            Scope = string.Join(" ", client.AllowedScopes),
+            AccessToken = accessToken.AccessToken,
+            ExpiresIn = accessToken.ExpiresIn,
+            Scope = string.Join(" ", client.AllowedScopes)
         };
 
-        return Result<TokenResponseDto>.Success(HttpStatusCode.Accepted).WithPayload(response);
+        return Result<TokenResponseDto>
+            .Success(HttpStatusCode.Accepted)
+            .WithPayload(response);
+    }
+
+    public bool ValidateClient(string clientId, string clientSecret, out AuthClient? client)
+    {
+        var clients = config.GetSection("AuthClients").Get<List<AuthClient>>() ?? [];
+        client = clients.FirstOrDefault(c =>
+            c.ClientId == clientId && c.ClientSecret == clientSecret);
+
+        return client is not null;
     }
 }
-
 
 public class AuthClient
 {
@@ -69,3 +56,6 @@ public class AuthClient
     public string ClientSecret { get; set; }
     public List<string> AllowedScopes { get; set; } = new();
 }
+
+
+
