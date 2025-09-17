@@ -1,9 +1,13 @@
-﻿using OpenTelemetry.Logs;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using OpenTelemetry.Logs;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 
-namespace PrintService.Api.Telemetry;
+namespace PrintService.Infraestructure.Telemetry;
 
 public static class OpenTelemetry
 {

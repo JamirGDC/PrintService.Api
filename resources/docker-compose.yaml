@@ -14,7 +14,7 @@ services:
       image: bitnami/prometheus
       container_name: prometheus
       volumes:
-        - ./Otel/prometheus.yaml:/etc/prometheus/prometheus.yml
+        - ./Otel/prometheus.yaml:/etc/prometheus/prometheus.yaml
       ports:
         - 9090:9090
   grafana:

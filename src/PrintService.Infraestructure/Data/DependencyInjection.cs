@@ -1,13 +1,14 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using PrintService.Application.Interfaces;
-using System;
-using PrintService.Infraestructure.Repositories;
-using PrintService.Application.Interfaces.Repositories;
+﻿using Microsoft.Extensions.Configuration;
 
 namespace PrintService.Infraestructure.Data;
 
-public static class DependencyInjection
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using Application.Interfaces;
+using Repositories;
+using PrintService.Application.Interfaces.Repositories;
+
+public static class InfrastructureServiceCollectionExtensions
 {
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, string connectionString)
     {
@@ -20,12 +21,13 @@ public static class DependencyInjection
         return services;
     }
 
-    public static IServiceCollection AddMSSQLHealthCheck(this IServiceCollection serviceCollection,
-        Func<IServiceProvider, Task<string>> connectionString)
+    public static IServiceCollection AddMssQlHealthCheck(this IServiceCollection services, IConfiguration configuration)
     {
-        ServiceProvider serviceProvider = serviceCollection.BuildServiceProvider();
-        string mssqlConnectionString = connectionString.Invoke(serviceProvider).Result;
-        serviceCollection.AddHealthChecks().AddSqlServer(mssqlConnectionString);
-        return serviceCollection;
+        var connectionString = configuration.GetConnectionString("DefaultConnection");
+        services.AddHealthChecks().AddSqlServer(connectionString!);
+        return services;
     }
+
+
+
 }

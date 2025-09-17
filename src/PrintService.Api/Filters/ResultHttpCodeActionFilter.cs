@@ -1,8 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Filters;
-using PrintService.Shared.Result;
+﻿namespace PrintService.Api.Filters;
 
-namespace PrintService.Api.Filters;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
+using Shared.Result;
 
 public class ResultHttpCodeActionFilter : IActionFilter
 {

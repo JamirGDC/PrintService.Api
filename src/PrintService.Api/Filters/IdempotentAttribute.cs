@@ -1,7 +1,6 @@
-﻿using System.Net;
-using Microsoft.AspNetCore.Http;
-namespace PrintService.Api.Filters;
+﻿namespace PrintService.Api.Filters;
 
+using System.Net;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Application.DTOs.Response;

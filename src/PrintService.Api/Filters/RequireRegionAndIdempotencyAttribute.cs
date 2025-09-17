@@ -1,6 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc.Filters;
+﻿namespace PrintService.Api.Filters;
 
-namespace PrintService.Api.Filters;
+using Microsoft.AspNetCore.Mvc.Filters;
 
 public class RequireRegionAndIdempotencyAttribute : RequestValidationAttribute
 {

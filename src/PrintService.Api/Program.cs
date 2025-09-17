@@ -1,9 +1,9 @@
-using PrintService.Api.Extensions;
+using PrintService.Api.Configuration;
 using PrintService.Api.Hubs;
 using PrintService.Api.Middleware;
-using PrintService.Api.Telemetry;
 using PrintService.Infraestructure.Data;
 using PrintService.Infraestructure.Security;
+using PrintService.Infraestructure.Telemetry;
 using PrintService.Shared.Logging;
 
 
@@ -20,11 +20,9 @@ builder.Services.AddTelemetry(builder.Configuration);
 
 // HealthChecks
 builder.Services.AddHealthChecks();
-builder.Services.AddMSSQLHealthCheck(async provider =>
-{
-    var configuration = provider.GetRequiredService<IConfiguration>();
-    return configuration.GetConnectionString("DefaultConnection")!;
-});
+builder.Services.AddMssQlHealthCheck(builder.Configuration);
+
+
 builder.Services.AddHealthChecksUI().AddInMemoryStorage();
 
 builder.Services.Configure<JwtOptions>(

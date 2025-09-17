@@ -1,7 +1,8 @@
-﻿using System.Text;
+﻿namespace PrintService.Api.Security;
+
+using System.Text;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-namespace PrintService.Api.Extensions;
 
 public static class AuthenticationExtensions
 {

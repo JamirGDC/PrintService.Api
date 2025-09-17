@@ -1,4 +1,4 @@
-﻿namespace PrintService.Api.Extensions;
+﻿namespace PrintService.Api.Configuration;
 
 using Microsoft.OpenApi.Models;
 using Filters;
@@ -9,8 +9,9 @@ using Application.Services;
 using Infraestructure.Context;
 using Infraestructure.Security;
 using Infraestructure.SignalR;
+using Security;
 
-public static class DependencyInjection
+public static class ApiServiceCollectionExtensions
 {
     public static IServiceCollection AddApiDependencies(this IServiceCollection services)
     {

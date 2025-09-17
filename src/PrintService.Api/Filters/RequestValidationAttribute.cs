@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc.Filters;
 using PrintService.Application.Interfaces.Services;
 using System.Net;
-using System.Text.Json;
 
 namespace PrintService.Api.Filters;
 
