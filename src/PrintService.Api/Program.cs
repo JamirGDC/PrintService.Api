@@ -3,7 +3,6 @@ using PrintService.Api.Hubs;
 using PrintService.Api.Middleware;
 using PrintService.Api.Telemetry;
 using PrintService.Infraestructure.Data;
-using PrintService.Infraestructure.Extensions.Middleware;
 using PrintService.Infraestructure.Security;
 using PrintService.Shared.Logging;
 
@@ -45,7 +44,6 @@ app.UseCors("AllowAll");
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.UseMiddleware<IdempotencyMiddleware>();
 app.UseMiddleware<LoggingEnrichmentMiddleware>();
 
 app.MapControllers();

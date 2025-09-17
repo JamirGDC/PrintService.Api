@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using PrintService.Api.Middleware;
+using PrintService.Api.Filters;
 using PrintService.Application.DTOs.Request;
 using PrintService.Application.DTOs.Response;
 using PrintService.Application.Interfaces.Services;
